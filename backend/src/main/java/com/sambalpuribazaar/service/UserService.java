@@ -4,43 +4,45 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.sambalpuribazaar.entity.Role;
 import com.sambalpuribazaar.entity.User;
 import com.sambalpuribazaar.repository.UserRepository;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    public void createUser(User user){
-        // prevent duplicate email
+    public User register(User user) {
+        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+            throw new RuntimeException("Email is required");
+        }
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            return;
+            throw new RuntimeException("Email already exists");
         }
-        // default role
-        if (user.getRole() == null) {
-            user.setRole(User.Role.USER);
-        }
-        // hash password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+
+        // No password hashing (simple mode)
+        user.setRole(Role.USER); // auto sets default USER
+        return userRepository.save(user);
     }
 
-    public List<User> getAllUser(){
+    public User login(String email, String password) {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return user;
+    }
+
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
-    public User getUserById(String id){
-        User user = userRepository.findById(id).orElse(null);
-        if(user != null){
-            return user;
-        }
-        return null;
-    }
-
-
 }

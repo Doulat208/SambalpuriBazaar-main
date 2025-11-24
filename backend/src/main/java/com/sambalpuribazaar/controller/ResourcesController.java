@@ -14,7 +14,7 @@ import com.sambalpuribazaar.service.ResourcesService;
 @RequestMapping("/api/product/{productId}/resources")
 public class ResourcesController {
 
-    @Autowired
+    @Autowired  
     private ResourcesService resourcesService;
 
     @GetMapping

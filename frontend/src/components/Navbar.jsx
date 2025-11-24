@@ -1,45 +1,64 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { isLoggedIn, logout } from "../utils/auth";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+function Navbar() {
   const navigate = useNavigate();
-  const [logged, setLogged] = useState(isLoggedIn());
 
-  useEffect(() => {
-    // simple listener for storage changes (multi-tab)
-    const onStorage = () => setLogged(isLoggedIn());
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
-  }, []);
+  const isLoggedIn = !!localStorage.getItem("token");
 
   const handleLogout = () => {
-    logout();
-    setLogged(false);
-    alert('Logged out');
-    navigate('/');
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   return (
-    <nav className="flex justify-between items-center bg-green-200 px-6 py-3 shadow-md">
-      {/* Logo on left */}
-      <div
-        className="font-bold text-xl cursor-pointer"
-        onClick={() => navigate("/")}
-      >
-      logo
+    <div style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "15px 30px",
+      background: "#f5f5f5",
+      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      position: "sticky",
+      top: 0,
+      zIndex: 100
+    }}>
+      
+      <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+        <Link to="/home" style={{ textDecoration: "none", color: "black" }}>
+          Sambalpuri Bazaar
+        </Link>
       </div>
-      <div className="flex space-x-6">
-        <button onClick={() => navigate("/women")}>Women</button>
-        <button onClick={() => navigate("/kids")}>Kids</button>
-        <button onClick={() => navigate("/cart")}>Cart</button>
-        <button onClick={() => navigate("/wishlist")}>Wishlist</button>
-        {!logged ? (
-          <button onClick={() => navigate("/login")}>Login / Signup</button>
+
+      <div style={{ display: "flex", gap: "30px", fontSize: "18px" }}>
+        <Link to="/men" style={{ textDecoration: "none", color: "black" }}>Men</Link>
+        <Link to="/women" style={{ textDecoration: "none", color: "black" }}>Women</Link>
+        <Link to="/kids" style={{ textDecoration: "none", color: "black" }}>Kids</Link>
+        <Link to="/custom" style={{ textDecoration: "none", color: "black" }}>Custom</Link>
+      </div>
+
+      <div>
+        {!isLoggedIn ? (
+          <div style={{ display: "flex", gap: "20px" }}>
+            <Link to="/login" style={{ textDecoration: "none", color: "black" }}>Login</Link>
+            <Link to="/signup" style={{ textDecoration: "none", color: "black" }}>Signup</Link>
+          </div>
         ) : (
-          <button onClick={handleLogout}>Logout</button>
+          <button 
+            onClick={handleLogout}
+            style={{
+              padding: "6px 15px",
+              border: "1px solid black",
+              background: "white",
+              cursor: "pointer"
+            }}
+          >
+            Logout
+          </button>
         )}
       </div>
-    </nav>
+    </div>
   );
 }
+
+export default Navbar;

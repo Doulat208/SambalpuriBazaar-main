@@ -1,55 +1,26 @@
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
+import Login from "./auth/Login";
+import Signup from "./auth/Signup";
+import Home from "./components/Home";
 import Footer from "./components/Footer";
-import Login from "./components/Login";
-import CreateAccount from "./components/CreateAccount";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Navbar from "./components/Navbar";
 
 
-
-function Home() {
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-grow">
-        <Hero />
-  
-      </main>
-      <Footer />
-    </div>
-  );
-}
-export default function App() {
+function App() {
   return (
     <Router>
+      <Navbar/>
       <Routes>
-        <Route path="/" element={<Home />} />
-        
-        <Route
-  path="/login"
-  element={
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-grow">
-        <Login />
-      </main>
-    </div>
-  }
-/>
-
-<Route
-  path="/signup"
-  element={
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-grow">
-        <CreateAccount />
-      </main>
-    </div>
-  }
-/>
-
+          <Route path="/" element={<Navigate to="/home" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/home" element={<Home />} />
       </Routes>
+      <Footer/>
     </Router>
   );
 }
+
+export default App;
