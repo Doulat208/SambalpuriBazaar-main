@@ -4,10 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 function Navbar() {
   const navigate = useNavigate();
 
-  const isLoggedIn = !!localStorage.getItem("token");
+  // we store user JSON in localStorage
+  const user = JSON.parse(localStorage.getItem("user")); 
+  const isLoggedIn = !!user;
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
@@ -35,15 +37,24 @@ function Navbar() {
         <Link to="/women" style={{ textDecoration: "none", color: "black" }}>Women</Link>
         <Link to="/kids" style={{ textDecoration: "none", color: "black" }}>Kids</Link>
         <Link to="/custom" style={{ textDecoration: "none", color: "black" }}>Custom</Link>
+
+        {/* 🔥 Show Admin Panel ONLY if role is ADMIN */}
+        {user?.role === "ADMIN" && (
+          <Link to="/admin" style={{ textDecoration: "none", color: "black" }}>
+            Admin Panel
+          </Link>
+        )}
       </div>
 
       <div>
         {!isLoggedIn ? (
+          // 🔥 When NOT logged in → show Login + Signup
           <div style={{ display: "flex", gap: "20px" }}>
             <Link to="/login" style={{ textDecoration: "none", color: "black" }}>Login</Link>
             <Link to="/signup" style={{ textDecoration: "none", color: "black" }}>Signup</Link>
           </div>
         ) : (
+          // 🔥 When logged in → show Logout
           <button 
             onClick={handleLogout}
             style={{

@@ -10,27 +10,33 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const response = await axios.post("http://localhost:9090/auth/login", {
-        email,
-        password,
-      });
+  try {
+    const response = await axios.post("http://localhost:9090/auth/login", {
+      email,
+      password,
+    });
 
-      // 🔥 Save token & user
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+    // Save user in local storage
+    localStorage.setItem("user", JSON.stringify(response.data));
 
-      setMessage("Login Successful!");
+    setMessage("Login Successful!");
 
-      navigate("/home"); // redirect
-      console.log("User:", response.data);
-
-    } catch (error) {
-      setMessage("Invalid Email or Password" + error);
+    // ROLE BASED REDIRECT
+    if (response.data.role === "ADMIN") {
+      navigate("/admin");     // redirect to admin panel
+    } else {
+      navigate("/home");      // redirect to user home
     }
-  };
+
+    console.log("User:", response.data);
+
+  } catch (error) {
+    setMessage("Invalid Email or Password" + error);
+  }
+};
+
 
   return (
     <div style={{ width: "300px", margin: "50px auto" }}>

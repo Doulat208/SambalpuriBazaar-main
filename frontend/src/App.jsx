@@ -6,7 +6,8 @@ import Signup from "./auth/Signup";
 import Home from "./components/Home";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-
+import Admin from "./components/Admin";
+import AdminCategories from "./components/admin/AdminCategories";
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/categories" element={<AdminCategories />} />
       </Routes>
       <Footer/>
     </Router>

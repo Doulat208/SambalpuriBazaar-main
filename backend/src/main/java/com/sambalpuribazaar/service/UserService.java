@@ -3,6 +3,7 @@ package com.sambalpuribazaar.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sambalpuribazaar.entity.Role;
@@ -15,6 +16,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public User register(User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty()) {
             throw new RuntimeException("Email is required");
@@ -25,6 +29,7 @@ public class UserService {
 
         // No password hashing (simple mode)
         user.setRole(Role.USER); // auto sets default USER
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // encode the actual password
         return userRepository.save(user);
     }
 
@@ -35,7 +40,7 @@ public class UserService {
             throw new RuntimeException("User not found");
         }
 
-        if (!user.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
 
