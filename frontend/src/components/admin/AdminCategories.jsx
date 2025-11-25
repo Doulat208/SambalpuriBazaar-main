@@ -100,13 +100,13 @@ const AdminCategories = () => {
         e.preventDefault();
         try {
             if (editingType) {
-                await axios.put(`/api/category/types/${editingType.id}`, typeForm);
+                await api.put(`/category/types/${editingType.id}`, typeForm);
             } else {
-                await axios.post(`/api/category/${selectedCategory.id}/types`, typeForm);
+                await api.post(`/category/${selectedCategory.id}/types`, typeForm);
             }
             setTypeForm({ name: "", code: "", description: "" });
             setEditingType(null);
-            const res = await axios.get(`/api/category/${selectedCategory.id}/types`);
+            const res = await api.get(`/category/${selectedCategory.id}/types`);
             setTypeList(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.error(err);
@@ -116,7 +116,7 @@ const AdminCategories = () => {
     const handleDeleteType = async (typeId) => {
         if (!window.confirm("Delete this category type?")) return;
         try {
-            await axios.delete(`/api/category/types/${typeId}`);
+            await api.delete(`/category/types/${typeId}`);
             setTypeList(typeList.filter((t) => t.id !== typeId));
         } catch (err) {
             console.error(err);
